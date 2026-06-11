@@ -1,6 +1,53 @@
 from datetime import datetime
 
+# ==============================================================================
+# NGOẠI LỆ DÙNG CHUNG CHO HỆ THỐNG
+# ==============================================================================
+class DuplicateNameError(Exception):
+    pass
 
+class InvalidPathError(Exception):
+    pass
+
+# ==============================================================================
+# CLASS LINKED LIST - TỰ CÀI ĐẶT ĐỂ QUẢN LÝ CÁC NODE CON
+# ==============================================================================
+class FolderLinkedList:
+    def __init__(self):
+        self.head = None  
+
+    def append(self, new_node):
+        """Thêm một node mới vào cuối danh sách liên kết"""
+        if self.head is None:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next_sibling is not None:
+                current = current.next_sibling
+            current.next_sibling = new_node
+        new_node.next_sibling = None
+
+    def remove(self, target_node):
+        """Xóa một node ra khỏi danh sách liên kết và nối lại con trỏ"""
+        if self.head is None:
+            return
+        if self.head == target_node:
+            self.head = self.head.next_sibling
+            target_node.next_sibling = None
+            return
+        prev = None
+        current = self.head
+        while current is not None:
+            if current == target_node:
+                prev.next_sibling = current.next_sibling
+                target_node.next_sibling = None
+                return
+            prev = current
+            current = current.next_sibling
+
+# ==============================================================================
+# CLASS NODE CHUNG - Đã chuyển từ mảng [] sang FolderLinkedList()
+# ==============================================================================
 class Node:
     def __init__(self, name, is_folder, size=0, parent=None):
         self.name = name
@@ -8,14 +55,15 @@ class Node:
         self.size = size
         self.parent = parent
         self.created_at = datetime.now()
-
+        self.next_sibling = None  
         if is_folder:
-            self.children = []
+            self.children = FolderLinkedList()
         else:
             self.children = None
 
-
-
+# ==============================================================================
+# KHUNG CHƯƠNG TRÌNH FILE SYSTEM TREE CỦA CẢ NHÓM
+# ==============================================================================
 class FileSystemTree:
     def __init__(self):
         self.root = Node("/", True)
@@ -24,7 +72,6 @@ class FileSystemTree:
     # ==================================================
     # NGƯỜI 1 - QUẢN LÝ THƯ MỤC (Folder Manager)
     # ==================================================
-
     def add_folder(self, name):
         pass
 
@@ -43,7 +90,6 @@ class FileSystemTree:
     # ==================================================
     # NGƯỜI 2 - QUẢN LÝ FILE (File Manager)
     # ==================================================
-
     def create_file(self, name, size):
         pass
 
@@ -58,7 +104,6 @@ class FileSystemTree:
 
     def move_file(self, source_name, destination_name):
         pass
-
     # ==================================================
     # NGƯỜI 3 - TÌM KIẾM & SẮP XẾP
     # ==================================================
