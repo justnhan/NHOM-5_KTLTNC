@@ -25,7 +25,7 @@ class FileSystemTree:
     # NGƯỜI 1 - QUẢN LÝ THƯ MỤC (Folder Manager)
     # ==================================================
 
-    def mkdir(self, name):
+    def add_folder(self, name):
         pass
 
     def rename_folder(self, old_name, new_name):
