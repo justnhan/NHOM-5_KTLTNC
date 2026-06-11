@@ -1,4 +1,3 @@
-# ĐOẠN CODE NÀY CHỈ CHỨA PHẦN THỰC THI CÔNG VIỆC ĐƯỢC GIAO CỦA BẠN
 
 def _find_child_by_name(self, parent_node, name):
     if parent_node.children is None or parent_node.children.head is None:
