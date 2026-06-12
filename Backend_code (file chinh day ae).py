@@ -110,23 +110,73 @@ class FileSystemTree:
     # NGƯỜI 3 - TÌM KIẾM & SẮP XẾP
     # ==================================================
 
+    def _dfs(self, node, condition, results):
+        if condition(node):
+            results.append(node)
+        if node.is_folder and node.children:
+            current = node.children.head
+            while current:
+                self._dfs(current, condition, results)
+                current = current.next_sibling
+
     def search_by_name(self, name):
-        pass
+        results = []
+        self._dfs(self.root, lambda n: n.name == name, results)
+        return results
 
     def search_by_extension(self, extension):
-        pass
+        results = []
+        self._dfs(self.root, lambda n: not n.is_folder and n.name.endswith(extension), results)
+        return results
 
     def search_by_size(self, min_size, max_size):
-        pass
+        results = []
+        self._dfs(self.root, lambda n: not n.is_folder and min_size <= n.size <= max_size, results)
+        return results
 
-    def sort_by_name(self):
-        pass
+    
+    
+    def sort_by_name(self, folder=None):
+        folder = folder or self.current_working_dir
+        if not folder.is_folder:
+            raise ValueError("Chỉ có thể sắp xếp trong thư mục.")
+        children = []
+        current = folder.children.head
+        while current:
+            children.append(current)
+            current = current.next_sibling
+        children.sort(key=lambda n: n.name)
+        folder.children.head = None
+        for child in children:
+            folder.children.append(child)
 
-    def sort_by_size(self):
-        pass
+    def sort_by_size(self, folder=None):
+        folder = folder or self.current_working_dir
+        if not folder.is_folder:
+            raise ValueError("Chỉ có thể sắp xếp trong thư mục.")
+        children = []
+        current = folder.children.head
+        while current:
+            children.append(current)
+            current = current.next_sibling
+        children.sort(key=lambda n: n.size)
+        folder.children.head = None
+        for child in children:
+            folder.children.append(child)
 
-    def sort_by_created_date(self):
-        pass
+    def sort_by_created_date(self, folder=None):
+        folder = folder or self.current_working_dir
+        if not folder.is_folder:
+            raise ValueError("Chỉ có thể sắp xếp trong thư mục.")
+        children = []
+        current = folder.children.head
+        while current:
+            children.append(current)
+            current = current.next_sibling
+        children.sort(key=lambda n: n.created_at)
+        folder.children.head = None
+        for child in children:
+            folder.children.append(child)
 
     # ==================================================
     # NGƯỜI 4 - THỐNG KÊ & HIỂN THỊ CÂY
