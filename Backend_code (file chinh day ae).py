@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 
 # ==============================================================================
 # NGOẠI LỆ DÙNG CHUNG CHO HỆ THỐNG
@@ -68,6 +69,7 @@ class FileSystemTree:
     def __init__(self):
         self.root = Node("/", True)
         self.current_working_dir = self.root
+        self.logs = []
 
     # ==================================================
     # NGƯỜI 1 - QUẢN LÝ THƯ MỤC (Folder Manager)
@@ -149,33 +151,173 @@ class FileSystemTree:
     # NGƯỜI 5 - SAVE/LOAD + UNDO/REDO + EXCEPTION
     # ==================================================
 
+
     def save_to_json(self, file_path):
-        pass
+
+        du_lieu = self.node_to_dict(
+            self.root
+        )
+
+        with open(
+            file_path,
+            "w",
+            encoding="utf-8"
+        ) as tep:
+
+            json.dump(
+                du_lieu,
+                tep,
+                indent=4,
+                ensure_ascii=False
+            )
+
+        self.log_action(
+            f"Saved to {file_path}"
+        )
+
+    # ==================================================
+    # LOAD JSON
+    # ==================================================
 
     def load_from_json(self, file_path):
-        pass
 
-    def undo(self):
-        pass
+        with open(
+            file_path,
+            "r",
+            encoding="utf-8"
+        ) as tep:
 
-    def redo(self):
-        pass
+            du_lieu = json.load(tep)
+
+        self.root = self.dict_to_node(
+            du_lieu
+        )
+
+        self.current_working_dir = (
+            self.root
+        )
+
+        self.log_action(
+            f"Loaded from {file_path}"
+        )
+
+
 
     def log_action(self, action):
-        pass
+        thoi_gian = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+        self.logs.append( f"[{thoi_gian}] {action}")
 
     # ==================================================
     # HÀM DÙNG CHUNG (KHÔNG AI SỞ HỮU)
     # ==================================================
 
     def change_directory(self, folder_name):
-        pass
+        if folder_name == "/":
+            self.current_working_dir = self.root
+            return
+        
+        node_con = (self.current_working_dir.children.head)
+        while node_con:
+            if (node_con.name == folder_name and node_con.is_folder ):
+                self.current_working_dir = node_con
+                return
+
+            node_con = node_con.next_sibling
+
+        raise InvalidPathError(f"Folder '{folder_name}' not found.")
 
     def go_back(self):
-        pass
+        if self.current_working_dir.parent:
+
+            self.current_working_dir = (
+                self.current_working_dir.parent
+            )
 
     def get_current_directory(self):
-        pass
+        return self.current_working_dir
 
     def find_node_by_path(self, path):
-        pass
+        if path == "/":
+            return self.root
+
+        danh_sach_ten = (  path.strip("/").split("/"))
+
+        node_hien_tai = self.root
+
+        for ten in danh_sach_ten:
+            node_tim_duoc = None
+            node_con = (node_hien_tai.children.head)
+
+            while node_con:
+                if node_con.name == ten:
+                    node_tim_duoc = node_con
+                    break
+
+                node_con = ( node_con.next_sibling )
+
+            if node_tim_duoc is None:
+
+                raise InvalidPathError(
+                    f"Invalid path: {path}"
+                )
+
+            node_hien_tai = node_tim_duoc
+
+        return node_hien_tai
+    
+    def node_to_dict(self, node):
+
+        du_lieu = {
+            "name": node.name,
+            "is_folder": node.is_folder,
+            "size": node.size
+        }
+
+        if node.is_folder:
+
+            du_lieu["children"] = []
+
+            node_con = node.children.head
+
+            while node_con:
+
+                du_lieu["children"].append(
+                    self.node_to_dict(node_con)
+                )
+
+                node_con = node_con.next_sibling
+
+        return du_lieu
+
+    # ==================================================
+    # HÀM HỖ TRỢ CHUYỂN DICTIONARY -> NODE
+    # ==================================================
+
+    def dict_to_node(self, du_lieu, node_cha=None):
+
+        node_moi = Node(
+            du_lieu["name"],
+            du_lieu["is_folder"],
+            du_lieu["size"],
+            node_cha
+        )
+
+        if node_moi.is_folder:
+
+            for du_lieu_con in du_lieu.get(
+                "children",
+                []
+            ):
+
+                node_con = self.dict_to_node(
+                    du_lieu_con,
+                    node_moi
+                )
+
+                node_moi.children.append(
+                    node_con
+                )
+
+        return node_moi
+
