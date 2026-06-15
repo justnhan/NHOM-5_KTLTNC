@@ -181,21 +181,86 @@ class FileSystemTree:
     # ==================================================
     # NGƯỜI 4 - THỐNG KÊ & HIỂN THỊ CÂY
     # ==================================================
-
+    
     def get_size(self, folder=None):
-        pass
-
+        folder = folder or self.current_working_dir
+    
+        if not folder.is_folder:
+            return folder.size
+    
+        tong = 0
+        node_con = folder.children.head
+    
+        while node_con:
+            tong += self.get_size(node_con)
+            node_con = node_con.next_sibling
+    
+        return tong
+    
+    
     def count_files(self, folder=None):
-        pass
-
+        folder = folder or self.current_working_dir
+    
+        if not folder.is_folder:
+            return 1
+    
+        dem = 0
+        node_con = folder.children.head
+    
+        while node_con:
+            dem += self.count_files(node_con)
+            node_con = node_con.next_sibling
+    
+        return dem
+    
+    
     def count_folders(self, folder=None):
-        pass
-
+        folder = folder or self.current_working_dir
+    
+        if not folder.is_folder:
+            return 0
+    
+        dem = 1
+    
+        node_con = folder.children.head
+    
+        while node_con:
+            if node_con.is_folder:
+                dem += self.count_folders(node_con)
+    
+            node_con = node_con.next_sibling
+    
+        return dem
+    
+    
     def tree(self, folder=None, level=0):
-        pass
-
+        folder = folder or self.current_working_dir
+    
+        ket_qua = "    " * level + folder.name + "\n"
+    
+        if folder.is_folder:
+            node_con = folder.children.head
+    
+            while node_con:
+                ket_qua += self.tree(node_con, level + 1)
+                node_con = node_con.next_sibling
+    
+        return ket_qua
+    
+    
     def get_full_path(self, node):
-        pass
+        duong_dan = []
+    
+        while node:
+            duong_dan.append(node.name)
+            node = node.parent
+    
+        duong_dan.reverse()
+    
+        if len(duong_dan) == 1:
+            return "/"
+    
+        return "/" + "/".join(duong_dan[1:])
 
     # ==================================================
     # NGƯỜI 5 - SAVE/LOAD + UNDO/REDO + EXCEPTION
