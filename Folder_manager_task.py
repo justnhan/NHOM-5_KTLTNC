@@ -1,14 +1,13 @@
+import sys
+from PyQt6.QtWidgets import QApplication, QWidget
 
-def _find_child_by_name(self, parent_node, name):
-    if parent_node.children is None or parent_node.children.head is None:
-        return None
-    current = parent_node.children.head
-    while current is not None:
-        if current.name == name:
-            return current
-        current = current.next_sibling
-    return None
+app = QApplication(sys.argv)
+window = QWidget()
+window.setWindowTitle('Kiểm tra PyQt6')
+window.resize(300, 200)
+window.show()
 
+sys.exit(app.exec())
 def add_folder(self, name):
     if self._find_child_by_name(self.current_working_dir, name) is not None:
         raise DuplicateNameError(f"Lỗi: Tên thư mục '{name}' đã tồn tại!")
