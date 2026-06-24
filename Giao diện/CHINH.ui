@@ -82,8 +82,12 @@ QTabBar::tab:selected{
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
+<<<<<<< HEAD
     <string notr="true">color:black
 </string>
+=======
+    <string notr="true">color:black</string>
+>>>>>>> 98a2c46b9bb9abfa0ae929ecf77d6c8f36641ac0
    </property>
    <widget class="QFrame" name="lowerframe">
     <property name="geometry">

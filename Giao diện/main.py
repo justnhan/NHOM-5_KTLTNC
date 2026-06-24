@@ -1,18 +1,26 @@
 import sys
 import os
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget
+from pathlib import Path
 from PyQt6.uic import loadUiType
+<<<<<<< HEAD
+
+=======
+from PyQt6.QtGui import QFont
+from PyQt6 import uic
+>>>>>>> 98a2c46b9bb9abfa0ae929ecf77d6c8f36641ac0
 
 
-# Load file .ui thành Class giao diện trước khi chạy code
-current_dir = os.path.dirname(os.path.abspath(__file__))
-ui_path = os.path.join(current_dir, "CHINH.ui")
-Ui_MainWindow, QtBaseClass = loadUiType(ui_path)
-
-class MyWindow(QMainWindow, Ui_MainWindow):
+class MyWindow(QMainWindow,QWidget):
     def __init__(self):
         super().__init__()
-        self.setupUi(self) # Khởi tạo giao diện từ file .ui vừa load
+        # Lấy thư mục chứa chính file Python này
+        current_dir = Path(__file__).parent
+        # Ghép nối chính xác tới file CHINH.ui
+        ui_path = current_dir / "CHINH.ui"
+        
+        # Load file UI bằng đường dẫn tuyệt đối vừa tạo
+        uic.loadUi(str(ui_path), self)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
