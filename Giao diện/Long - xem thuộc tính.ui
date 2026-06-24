@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>478</width>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>THÔNG BÁO</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);</string>
   </property>
   <widget class="QFrame" name="propertyFrame">
    <property name="enabled">
@@ -19,10 +22,10 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>30</x>
-     <y>10</y>
-     <width>341</width>
-     <height>261</height>
+     <x>90</x>
+     <y>20</y>
+     <width>351</width>
+     <height>271</height>
     </rect>
    </property>
    <property name="maximumSize">
@@ -57,7 +60,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="autoFillBackground">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -68,15 +71,17 @@
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>0</y>
+      <x>0</x>
+      <y>-10</y>
       <width>111</width>
-      <height>21</height>
+      <height>51</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
@@ -179,7 +184,7 @@
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>140</y>
+      <y>130</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -193,6 +198,35 @@
      <string>Dung lượng:</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QLabel" name="label_13">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>61</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+     <weight>50</weight>
+     <italic>false</italic>
+     <bold>false</bold>
+     <strikeout>false</strikeout>
+     <stylestrategy>PreferDefault</stylestrategy>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="pixmap">
+    <pixmap>../../../../../Downloads/xem.png</pixmap>
+   </property>
+   <property name="scaledContents">
+    <bool>true</bool>
+   </property>
   </widget>
  </widget>
  <resources/>
