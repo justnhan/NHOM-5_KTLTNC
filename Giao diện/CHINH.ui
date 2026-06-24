@@ -81,6 +81,10 @@ QTabBar::tab:selected{
 </string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">color:black
+</string>
+   </property>
    <widget class="QFrame" name="lowerframe">
     <property name="geometry">
      <rect>
@@ -115,9 +119,9 @@ QTabBar::tab:selected{
     <widget class="QFrame" name="frame_6">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>10</y>
-       <width>1241</width>
+       <width>1231</width>
        <height>111</height>
       </rect>
      </property>
@@ -179,7 +183,7 @@ QTabBar::tab:selected{
        <string/>
       </property>
       <property name="readOnly">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="placeholderText">
        <string>Current Path</string>
@@ -287,9 +291,9 @@ QTabBar::tab:selected{
     <widget class="QTreeView" name="treeView">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>130</y>
-       <width>331</width>
+       <width>321</width>
        <height>581</height>
       </rect>
      </property>
@@ -327,14 +331,16 @@ QTabBar::tab:selected{
      </property>
      <property name="font">
       <font>
-       <pointsize>12</pointsize>
+       <pointsize>14</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(255, 255, 255)</string>
+      <string notr="true">background-color: white</string>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="File">
       <property name="whatsThis">
@@ -348,8 +354,8 @@ QTabBar::tab:selected{
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>891</width>
-         <height>51</height>
+         <width>1221</width>
+         <height>57</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -358,54 +364,60 @@ QTabBar::tab:selected{
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QToolButton" name="btnNewfolder">
+       <widget class="QPushButton" name="btnNewfolder">
         <property name="geometry">
          <rect>
-          <x>0</x>
+          <x>10</x>
           <y>0</y>
-          <width>201</width>
-          <height>51</height>
+          <width>221</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
          <string>📁 New Folder</string>
         </property>
        </widget>
-       <widget class="QToolButton" name="btnOpen">
+       <widget class="QPushButton" name="btnOpen">
         <property name="geometry">
          <rect>
-          <x>200</x>
+          <x>230</x>
           <y>0</y>
-          <width>201</width>
-          <height>51</height>
+          <width>231</width>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
          <string>📂 Open Folder</string>
         </property>
        </widget>
-       <widget class="QToolButton" name="btnSave">
+       <widget class="QPushButton" name="btnSave">
         <property name="geometry">
          <rect>
-          <x>400</x>
+          <x>460</x>
           <y>0</y>
           <width>201</width>
-          <height>51</height>
+          <height>41</height>
          </rect>
         </property>
         <property name="font">
          <font>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -436,7 +448,27 @@ QTabBar::tab:selected{
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QToolButton" name="btnAddFile">
+       <widget class="QPushButton" name="btnAddFile">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>0</y>
+          <width>211</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>📂➕ Add folder</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnAddFolder">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -448,34 +480,18 @@ QTabBar::tab:selected{
         <property name="font">
          <font>
           <pointsize>14</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>📂➕ Add folder</string>
-        </property>
-       </widget>
-       <widget class="QToolButton" name="btnAddFolder">
-        <property name="geometry">
-         <rect>
-          <x>200</x>
-          <y>0</y>
-          <width>201</width>
-          <height>51</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
          <string>📄➕ Add File</string>
         </property>
        </widget>
-       <widget class="QToolButton" name="btnRename">
+       <widget class="QPushButton" name="btnRename">
         <property name="geometry">
          <rect>
-          <x>400</x>
+          <x>410</x>
           <y>0</y>
           <width>201</width>
           <height>51</height>
@@ -484,16 +500,18 @@ QTabBar::tab:selected{
         <property name="font">
          <font>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
          <string>✏ Rename</string>
         </property>
        </widget>
-       <widget class="QToolButton" name="btnDelete">
+       <widget class="QPushButton" name="btnDelete">
         <property name="geometry">
          <rect>
-          <x>600</x>
+          <x>610</x>
           <y>0</y>
           <width>201</width>
           <height>51</height>
@@ -501,7 +519,10 @@ QTabBar::tab:selected{
         </property>
         <property name="font">
          <font>
+          <family>Arial</family>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -534,7 +555,7 @@ QTabBar::tab:selected{
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QToolButton" name="btnAllinfo">
+       <widget class="QPushButton" name="btnAllinfo">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -546,6 +567,8 @@ QTabBar::tab:selected{
         <property name="font">
          <font>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
@@ -573,7 +596,7 @@ QTabBar::tab:selected{
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QToolButton" name="btnContact">
+       <widget class="QPushButton" name="btnContact">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -585,6 +608,8 @@ QTabBar::tab:selected{
         <property name="font">
          <font>
           <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
          </font>
         </property>
         <property name="text">
