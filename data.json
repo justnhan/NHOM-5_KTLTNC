@@ -1,0 +1,70 @@
+{
+    "name": "/",
+    "is_folder": true,
+    "size": 0,
+    "children": [
+        {
+            "name": "Documents",
+            "is_folder": true,
+            "size": 0,
+            "children": [
+                {
+                    "name": "report.pdf",
+                    "is_folder": false,
+                    "size": 120
+                },
+                {
+                    "name": "notes.txt",
+                    "is_folder": false,
+                    "size": 45
+                }
+            ]
+        },
+        {
+            "name": "Images",
+            "is_folder": true,
+            "size": 0,
+            "children": [
+                {
+                    "name": "avatar.png",
+                    "is_folder": false,
+                    "size": 350
+                },
+                {
+                    "name": "background.jpg",
+                    "is_folder": false,
+                    "size": 780
+                }
+            ]
+        },
+        {
+            "name": "Projects",
+            "is_folder": true,
+            "size": 0,
+            "children": [
+                {
+                    "name": "Python",
+                    "is_folder": true,
+                    "size": 0,
+                    "children": [
+                        {
+                            "name": "main.py",
+                            "is_folder": false,
+                            "size": 25
+                        },
+                        {
+                            "name": "database.sqlite",
+                            "is_folder": false,
+                            "size": 512
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "README.md",
+            "is_folder": false,
+            "size": 10
+        }
+    ]
+}
