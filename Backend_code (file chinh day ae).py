@@ -1,4 +1,4 @@
- from datetime import datetime
+from datetime import datetime
 import json
 
 # ==============================================================================
@@ -75,19 +75,74 @@ class FileSystemTree:
     # NGƯỜI 1 - QUẢN LÝ THƯ MỤC (Folder Manager)
     # ==================================================
     def add_folder(self, name):
-        pass
-
+        if self._find_child_by_name(self.current_working_dir, name) is not None:
+            raise DuplicateNameError(f"Lỗi: Tên thư mục '{name}' đã tồn tại!")
+        new_folder = Node(name=name, is_folder=True, size=0, parent=self.current_working_dir)
+        self.current_working_dir.children.append(new_folder)
+        print(f"Đã tạo thư mục: {name}")
+        return new_folder
     def rename_folder(self, old_name, new_name):
-        pass
-
+        target_node = self._find_child_by_name(self.current_working_dir, old_name)
+        if target_node is None or not target_node.is_folder:
+            raise InvalidPathError(f"Lỗi: Không tìm thấy thư mục '{old_name}'!")
+        if old_name != new_name and self._find_child_by_name(self.current_working_dir, new_name) is not None:
+            raise DuplicateNameError(f"Lỗi: Tên mới '{new_name}' đã tồn tại!")
+        target_node.name = new_name
+        print(f"Đã đổi tên thư mục '{old_name}' thành '{new_name}'")
     def delete_folder(self, folder_name):
-        pass
-
+        target_node = self._find_child_by_name(self.current_working_dir, folder_name)
+        if target_node is None or not target_node.is_folder:
+            raise InvalidPathError(f"Lỗi: Không tìm thấy thư mục '{folder_name}' cần xóa!")
+        self._deep_delete(target_node)
+        self.current_working_dir.children.remove(target_node)
+        target_node.parent = None
+        print(f"Đã xóa hoàn toàn thư mục '{folder_name}' và dữ liệu bên trong.")
+    def _deep_delete(self, node):
+        if node.children is not None:
+            current_child = node.children.head
+            while current_child is not None:
+                next_sib = current_child.next_sibling
+                if current_child.is_folder:
+                    self._deep_delete(current_child)
+                current_child.parent = None
+                current_child.children = None
+                current_child.next_sibling = None
+                current_child = next_sib
+            node.children.head = None 
+    def _clone_tree(self, source_node, new_parent):
+        cloned_node = Node(name=source_node.name, is_folder=source_node.is_folder, size=source_node.size, parent=new_parent)
+        if source_node.is_folder and source_node.children is not None:
+            current_child = source_node.children.head
+            while current_child is not None:
+                cloned_child = self._clone_tree(current_child, cloned_node)
+                cloned_node.children.append(cloned_child)
+                current_child = current_child.next_sibling
+        return cloned_node
     def copy_folder(self, source_name, destination_name):
-        pass
-
+        src_node = self._find_child_by_name(self.current_working_dir, source_name)
+        dest_node = self._find_child_by_name(self.current_working_dir, destination_name)
+        if src_node is None or not src_node.is_folder:
+            raise InvalidPathError(f"Lỗi: Không tìm thấy thư mục nguồn '{source_name}'!")
+        if dest_node is None or not dest_node.is_folder:
+            raise InvalidPathError(f"Lỗi: Không tìm thấy thư mục đích '{destination_name}'!")
+        if self._find_child_by_name(dest_node, source_name) is not None:
+            raise DuplicateNameError(f"Lỗi: Thư mục đích đã có phần tử tên '{source_name}'!")
+        cloned_folder = self._clone_tree(src_node, dest_node)
+        dest_node.children.append(cloned_folder)
+        print(f"Đã sao chép thư mục '{source_name}' vào '{destination_name}' thành công.")
     def move_folder(self, source_name, destination_name):
-        pass
+        src_node = self._find_child_by_name(self.current_working_dir, source_name)
+        dest_node = self._find_child_by_name(self.current_working_dir, destination_name)
+        if src_node is None or not src_node.is_folder:
+            raise InvalidPathError(f"Lỗi: Không tìm thấy thư mục nguồn '{source_name}'!")
+        if dest_node is None or not dest_node.is_folder:
+            raise InvalidPathError(f"Lỗi: Không tìm thấy thư mục đích '{destination_name}'!")
+        if self._find_child_by_name(dest_node, source_name) is not None:
+            raise DuplicateNameError(f"Lỗi: Thư mục đích đã có phần tử tên '{source_name}'!")
+        self.current_working_dir.children.remove(src_node)
+        src_node.parent = dest_node
+        dest_node.children.append(src_node)
+        print(f"Đã di chuyển thư mục '{source_name}' vào '{destination_name}' thành công.")
 
     # ==================================================
     # NGƯỜI 2 - QUẢN LÝ FILE (File Manager)
@@ -108,7 +163,7 @@ class FileSystemTree:
         return new_file
     
     
-     def delete_file(self, name):
+    def delete_file(self, name):
          current = self.current_working_dir.children.head
      
          while current:
@@ -120,7 +175,7 @@ class FileSystemTree:
          raise InvalidPathError(f"Không tìm thấy file '{name}'.")
      
      
-     def rename_file(self, old_name, new_name):
+    def rename_file(self, old_name, new_name):
          current = self.current_working_dir.children.head
      
          # Kiểm tra tên mới có bị trùng không
@@ -142,7 +197,7 @@ class FileSystemTree:
          raise InvalidPathError(f"Không tìm thấy file '{old_name}'.")
      
      
-     def copy_file(self, source_name, destination_name):
+    def copy_file(self, source_name, destination_name):
          source = None
          current = self.current_working_dir.children.head
      
@@ -177,7 +232,7 @@ class FileSystemTree:
          return copied_file
      
      
-     def move_file(self, source_name, destination_name):
+    def move_file(self, source_name, destination_name):
          file_node = None
          current = self.current_working_dir.children.head
      
