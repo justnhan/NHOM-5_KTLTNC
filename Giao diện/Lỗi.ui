@@ -6,15 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>151</height>
+    <width>515</width>
+    <height>168</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Lỗi</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color:#FFFFFF</string>
+   <string notr="true">background-color:#FFFFFF;
+color: black</string>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">

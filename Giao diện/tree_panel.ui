@@ -19,6 +19,9 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
+  <property name="styleSheet">
+   <string notr="true">color: black</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QPushButton" name="btnDelete_2">
     <property name="geometry">
@@ -165,6 +168,10 @@
       <normaloff>../../../copy.png</normaloff>../../../copy.png</iconset>
     </property>
    </widget>
+   <zorder>btnRename</zorder>
+   <zorder>btnMkdir</zorder>
+   <zorder>btnMove</zorder>
+   <zorder>btnCopy</zorder>
    <zorder>btnDelete_2</zorder>
    <zorder>btnDelete</zorder>
    <zorder>label</zorder>

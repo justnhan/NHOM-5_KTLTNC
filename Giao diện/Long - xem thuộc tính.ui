@@ -14,7 +14,8 @@
    <string>THÔNG BÁO</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgb(255, 255, 255);</string>
+   <string notr="true">background-color: rgb(255, 255, 255);
+color: black</string>
   </property>
   <widget class="QFrame" name="propertyFrame">
    <property name="enabled">
