@@ -231,7 +231,7 @@ class MainApp(QtWidgets.QMainWindow):
     # ==================================================
     # TÌM KIẾM
     # ==================================================
-
+    
     def search_by_name(self):
         """
         Tìm kiếm theo txtSearch.
@@ -243,7 +243,24 @@ class MainApp(QtWidgets.QMainWindow):
         Sau đó hiển thị kết quả
         lên TableView.
         """
-
+        """Tự động gọi khi gõ chữ vào ô tìm kiếm txtSearch"""
+        keyword = self.txtSearch.text().strip()
+        if not keyword:
+            # Nếu ô tìm kiếm trống, hiển thị lại toàn bộ cây hoặc thư mục hiện tại
+            return
+        # Gọi tầng backend tìm kiếm từ gốc cây
+        matching_nodes = self.fs.search_by_name(self.fs.root, keyword)
+        
+        # Hiển thị kết quả tìm kiếm lên bảng hiển thị (Ví dụ tableWidget hoặc listWidget của nhóm)
+        # Giả sử bảng hiển thị của nhóm tên là tableWidget hoặc listWidget, tớ viết mẫu cách xóa và nạp lại:
+        if hasattr(self, 'tableWidget'):
+            self.tableWidget.setRowCount(0)
+            for row, node in enumerate(matching_nodes):
+                self.tableWidget.insertRow(row)
+                self.tableWidget.setItem(row, 0, QtWidgets.QTableWidgetItem(node.name))
+                loai = "Folder" if node.is_folder else "File"
+                self.tableWidget.setItem(row, 1, QtWidgets.QTableWidgetItem(loai))
+                self.tableWidget.setItem(row, 2, QtWidgets.QTableWidgetItem(str(node.size) + " KB"))
 
 
     def search_by_filter(self):
