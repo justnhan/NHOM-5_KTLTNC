@@ -194,21 +194,28 @@ class MainApp(QtWidgets.QMainWindow):
 
 
     def rename_node(self):
-        """
-        Đổi tên node đang chọn.
+    
+       item = self.get_selected_node()
 
-        Có thể:
+       if item is None:
+        return
 
-            QInputDialog
+       old_name = item.text(0)
 
-        hoặc
+    new_name, ok = QInputDialog.getText(
+         self,
+        "Đổi tên",
+        "Nhập tên mới:"
+    )
 
-            form DoiTenFile
+    if ok and new_name.strip():
+        item.setText(0, new_name)
 
-        Gọi:
-
-            self.fs.rename_node(...)
-        """
+        DoiTenFile.information(
+            self,
+            "Thành công",
+            f"Đã đổi tên '{old_name}' thành '{new_name}'"
+        )
 
 
 
@@ -303,20 +310,19 @@ class MainApp(QtWidgets.QMainWindow):
 
 
 
+    
     def get_selected_node(self):
-        """
-        Hàm cực kỳ quan trọng.
+        item = self.treeWidget.currentItem()
 
-        Trả về node đang chọn.
+        if item is None:
+            QMessageBox.warning(
+                self,
+                "Lỗi",
+                "Vui lòng chọn một file hoặc thư mục"
+        )
+        return None
 
-        Sau này:
-
-            rename
-            delete
-            info
-
-        đều dùng hàm này.
-        """
+    return item
 
 
 
@@ -357,20 +363,23 @@ class MainApp(QtWidgets.QMainWindow):
     # ==================================================
 
     def show_info(self):
-        """
-        btnAllInfo
+        item = self.get_selected_node()
 
-        Hiển thị:
+        if item is None:
+            return
 
-            tên
-            loại
-            kích thước
-            ngày tạo
-            đường dẫn
+        name = item.text(0)
 
-        của node đang chọn.
-        """
+        if item.childCount() > 0:
+           node_type = "Thư mục"
+        else:
+           node_type = "File"
 
+        QMessageBox.information(
+        self,
+        "Thông tin",
+        f"Tên: {name}\nLoại: {node_type}"
+    )
 
 
     def search_by_size(self):
