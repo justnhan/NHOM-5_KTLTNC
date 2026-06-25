@@ -91,7 +91,7 @@ QTabBar::tab:selected{
       <x>-10</x>
       <y>100</y>
       <width>1261</width>
-      <height>721</height>
+      <height>731</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -167,7 +167,7 @@ QTabBar::tab:selected{
        <rect>
         <x>250</x>
         <y>0</y>
-        <width>991</width>
+        <width>971</width>
         <height>51</height>
        </rect>
       </property>
@@ -215,9 +215,9 @@ QTabBar::tab:selected{
      <widget class="QLineEdit" name="txtSearch">
       <property name="geometry">
        <rect>
-        <x>610</x>
+        <x>10</x>
         <y>60</y>
-        <width>501</width>
+        <width>1101</width>
         <height>41</height>
        </rect>
       </property>
@@ -238,7 +238,7 @@ QTabBar::tab:selected{
        <rect>
         <x>1120</x>
         <y>60</y>
-        <width>111</width>
+        <width>101</width>
         <height>41</height>
        </rect>
       </property>
@@ -340,7 +340,7 @@ QTabBar::tab:selected{
       <string notr="true">background-color: white</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="File">
       <property name="whatsThis">
@@ -438,7 +438,7 @@ QTabBar::tab:selected{
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1041</width>
+         <width>1221</width>
          <height>51</height>
         </rect>
        </property>
@@ -540,7 +540,7 @@ QTabBar::tab:selected{
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1201</width>
+         <width>1221</width>
          <height>51</height>
         </rect>
        </property>
@@ -575,6 +575,26 @@ QTabBar::tab:selected{
          <string>💡 INFO</string>
         </property>
        </widget>
+       <widget class="QPushButton" name="btnSearchbysize">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>0</y>
+          <width>271</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>💡 Search - size</string>
+        </property>
+       </widget>
       </widget>
      </widget>
      <widget class="QWidget" name="help">
@@ -586,7 +606,7 @@ QTabBar::tab:selected{
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>1041</width>
+         <width>1221</width>
          <height>51</height>
         </rect>
        </property>
