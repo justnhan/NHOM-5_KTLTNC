@@ -105,15 +105,26 @@ class MainApp(QtWidgets.QMainWindow):
         """
 
     def refresh_path(self):
-        """
-        Hiển thị đường dẫn hiện tại.
 
-        Ví dụ:
+        current = self.fs.current_working_dir
 
-            C:/Documents/Python
+        path_parts = []
 
-        lên txtPath.
-        """
+        while current is not None:
+
+            if current.parent is None:
+                break
+
+            path_parts.append(current.name)
+
+            current = current.parent
+
+        path = "/" + "/".join(reversed(path_parts))
+
+        if path == "/":
+            self.txtPath.setText("/")
+        else:
+            self.txtPath.setText(path)
 
 
 
@@ -122,37 +133,36 @@ class MainApp(QtWidgets.QMainWindow):
     # ==================================================
 
     def go_home(self):
-        """
-        Nút Home.
 
-        current_working_dir = root
+        self.fs.current_working_dir = self.fs.root
 
-        Sau đó refresh.
-        """
+        self.refresh_path()
+        self.refresh_table_view()
+        
 
 
 
     def go_back(self):
-        """
-        Nút Back.
 
-        Gọi:
+        self.fs.go_back()
 
-            self.fs.go_back()
-
-        Sau đó refresh.
-        """
+        self.refresh_path()
+        self.refresh_table_view()
 
 
 
     def change_directory(self, node):
-        """
-        Đổi thư mục hiện tại.
 
-        current_working_dir = node
+        if node is None:
+            return
 
-        Sau đó refresh.
-        """
+        if not node.is_folder:
+            return
+
+        self.fs.current_working_dir = node
+
+        self.refresh_path()
+        self.refresh_table_view()
 
 
 
