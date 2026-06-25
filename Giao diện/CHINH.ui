@@ -112,9 +112,20 @@ QTabBar::tab:selected{
        <height>581</height>
       </rect>
      </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <property name="styleSheet">
       <string>background-color:rgb(255, 255, 255)</string>
      </property>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>220</number>
+     </attribute>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>false</bool>
+     </attribute>
     </widget>
     <widget class="QFrame" name="frame_6">
      <property name="geometry">

@@ -1,12 +1,21 @@
 import sys
 import os
 from pathlib import Path
-from PyQt6 import QtWidgets, uic
-from DoiTenFile import MyWindow
-from Backend_code import FileSystemTree
 
 # 1. Lấy đường dẫn của thư mục chứa file CHINH.py hiện tại
 BASE_DIR = Path(__file__).resolve().parent
+PARENT_DIR = BASE_DIR.parent  # Đường dẫn của thư mục cấp lớn hơn
+
+if str(PARENT_DIR) not in sys.path:
+    sys.path.insert(0, str(PARENT_DIR))
+
+from PyQt6 import QtWidgets, uic
+from PyQt6.QtGui import QStandardItem, QStandardItemModel
+from main_giaodienphu import *
+from Backend_code import FileSystemTree
+
+
+
 
 # 2. Tạo đường dẫn chính xác đến file .ui của bạn
 # CHÚ Ý: Hãy thay 'giao_dien_chinh.ui' thành đúng tên file ui chính của bạn
@@ -26,6 +35,7 @@ class MainApp(QtWidgets.QMainWindow):
         # ==========================
 
         self.connect_signals()
+        self.load_data()
 
         # ==========================
         # LOAD DỮ LIỆU BAN ĐẦU
@@ -40,25 +50,112 @@ class MainApp(QtWidgets.QMainWindow):
     # ==================================================
 
     def connect_signals(self):
-        """
-        Gom toàn bộ connect vào đây.
+    # ===== Thanh điều hướng =====
 
-        Mục đích:
-        - Dễ đọc
-        - Dễ sửa
-        - __init__ gọn hơn
+        self.btnHome.clicked.connect(
+            self.go_home
+        )
 
-        Ví dụ:
-        self.btnSave.clicked.connect(self.save_data)
-        """
+        self.btnBack.clicked.connect(
+            self.go_back
+        )
+
+
+
+        self.cboFilter.currentTextChanged.connect(
+            self.search_nodes
+        )
+
+
+
+        self.btnNewfolder.clicked.connect(
+            self.add_folder
+        )
+
+        self.btnSave.clicked.connect(
+            self.save_file
+        )
+
+        # ===== Edit =====
+
+        self.btnAddFile.clicked.connect(
+            self.add_file
+        )
+
+        self.btnAddFolder.clicked.connect(
+            self.add_folder
+        )
+
+        self.btnRename.clicked.connect(
+            self.rename_node
+        )
+
+        self.btnDelete.clicked.connect(
+            self.delete_node
+        )
+
+        # ===== View =====
+
+        self.btnAllinfo.clicked.connect(
+            self.show_info
+        )
+
+        self.btnSearchbysize.clicked.connect(
+            self.search_by_size
+        )
+
+        # ===== Help =====
+
+        self.btnContact.clicked.connect(
+            self.show_contact
+        )
+
+        # ===== Tree View =====
+
+        self.treeView.clicked.connect(
+            self.tree_item_clicked
+        )
+
+        self.treeView.doubleClicked.connect(
+            self.tree_item_double_clicked
+        )
+
+        # ===== Table View =====
+
+        self.tableView.clicked.connect(
+            self.table_item_clicked
+        )
+
+        self.tableView.doubleClicked.connect(
+            self.table_item_double_clicked
+        )
 
 
 
     # ==================================================
     # REFRESH GIAO DIỆN
     # ==================================================
+    def load_data(self):
+        try:
+
+            self.load_file()
+            self.refresh_all()
+
+        except Exception as e:
+
+            import traceback
+            traceback.print_exc()
+
+            QtWidgets.QMessageBox.critical(
+                self,
+                "Lỗi 2",
+                str(e)
+            )
 
     def refresh_all(self):
+
+        self.refresh_table_view()
+        self.refresh_tree_view()
         """
         Hàm tổng.
 
@@ -73,37 +170,88 @@ class MainApp(QtWidgets.QMainWindow):
             self.refresh_all()
         """
 
+
     def refresh_tree_view(self):
-        """
-        Đổ toàn bộ cây thư mục lên TreeView.
 
-        Dữ liệu lấy từ:
+        model = QStandardItemModel()
+        model.setHorizontalHeaderLabels(["Thư mục"])
 
-            self.fs.root
+        def add_folder(parent_item, folder_node):
 
-        Sử dụng:
+            item = QStandardItem("📁 " + folder_node.name)
 
-            QStandardItemModel
+            # Lưu Node thật để xử lý khi click
+            item.setData(folder_node)
 
-        Hàm tree_ui() của bạn
-        sẽ cực kỳ hữu ích ở đây.
-        """
+            parent_item.appendRow(item)
+
+            current = folder_node.children.head
+
+            while current:
+
+                if current.is_folder:
+                    add_folder(item, current)
+
+                current = current.next
+
+        root_item = model.invisibleRootItem()
+
+        add_folder(
+            root_item,
+            self.fs.root  # đổi thành tên biến FileSystemTree của bạn nếu khác
+        )
+
+        self.treeView.setModel(model)
+
+        self.treeView.expandAll()
 
     def refresh_table_view(self):
-        """
-        Hiển thị danh sách con
-        của current_working_dir.
 
-        Hiển thị:
+        model = QStandardItemModel()
 
-            Name
-            Type
-            Size
-            Created At
+        model.setHorizontalHeaderLabels(
+            [
+                "Tên file",
+                "Loại",
+                "Kích thước",
+                "Thời gian tạo"
+            ]
+        )
 
-        Đây chính là chức năng ls.
-        """
+        current = (
+            self.fs.current_working_dir.children.head
+        )
 
+        while current:
+
+            row = [
+
+                QStandardItem(
+                    current.name
+                ),
+
+                QStandardItem(
+                    "Folder"
+                    if current.is_folder
+                    else "File"
+                ),
+
+                QStandardItem(
+                    str(current.size)
+                ),
+
+                QStandardItem(
+                    current.created_at.strftime("%d/%m/%Y %H:%M:%S")
+            )
+
+            ]
+
+            model.appendRow(row)
+
+            current = current.next
+
+        self.tableView.setModel(model)
+   
     def refresh_path(self):
         """
         Hiển thị đường dẫn hiện tại.
@@ -131,7 +279,6 @@ class MainApp(QtWidgets.QMainWindow):
         """
 
 
-
     def go_back(self):
         """
         Nút Back.
@@ -142,8 +289,6 @@ class MainApp(QtWidgets.QMainWindow):
 
         Sau đó refresh.
         """
-
-
 
     def change_directory(self, node):
         """
@@ -232,6 +377,18 @@ class MainApp(QtWidgets.QMainWindow):
     # TÌM KIẾM
     # ==================================================
 
+    def search_nodes(self):
+        """
+        Khi cboFilter thay đổi.
+
+        Gọi:
+
+            self.search_by_name()
+            self.search_by_filter()
+
+        tùy lựa chọn.
+        """
+        
     def search_by_name(self):
         """
         Tìm kiếm theo txtSearch.
@@ -243,7 +400,6 @@ class MainApp(QtWidgets.QMainWindow):
         Sau đó hiển thị kết quả
         lên TableView.
         """
-
 
 
     def search_by_filter(self):
@@ -270,7 +426,7 @@ class MainApp(QtWidgets.QMainWindow):
     # TREEVIEW
     # ==================================================
 
-    def on_tree_clicked(self, index):
+    def tree_item_clicked(self, index):
         """
         Khi click TreeView.
 
@@ -281,13 +437,38 @@ class MainApp(QtWidgets.QMainWindow):
         Refresh TableView.
         """
 
+    def tree_item_double_clicked(self, index):
+        """
+        Khi double click TreeView.
 
+        Lấy node tương ứng.
+
+        Nếu là folder:
+
+            change_directory()
+
+        Nếu là file:
+
+            không làm gì
+            hoặc hiện thông tin.
+        """
 
     # ==================================================
     # TABLEVIEW
     # ==================================================
 
-    def on_table_double_clicked(self, index):
+    def table_item_clicked(self, index):
+        """
+        Khi click TableView.
+
+        Lấy node tương ứng.
+
+        Đổi current_working_dir.
+
+        Refresh TableView.
+        """
+
+    def table_item_double_clicked(self, index):
         """
         Double click.
 
@@ -300,8 +481,6 @@ class MainApp(QtWidgets.QMainWindow):
             không làm gì
             hoặc hiện thông tin.
         """
-
-
 
     def get_selected_node(self):
         """
@@ -324,31 +503,40 @@ class MainApp(QtWidgets.QMainWindow):
     # JSON
     # ==================================================
 
-    def save_data(self):
-        """
-        btnSave
-
-        Gọi:
-
+    def save_file(self):
+        try:
             self.fs.save_to_json()
 
-        Sau đó hiện:
+            QtWidgets.QMessageBox.information(
+                self,
+                "Thông báo",
+                "Lưu dữ liệu thành công!"
+            )
 
-            Saved successfully
-        """
+        except Exception as loi:
 
+            QtWidgets.QMessageBox.critical(
+                self,
+                "Lỗi",
+                str(loi)
+            )
 
-
-    def load_data(self):
-        """
-        btnOpen
-
-        Gọi:
+    def load_file(self):
+        try:
 
             self.fs.load_from_json()
 
-        Sau đó refresh.
-        """
+        except Exception as e:
+
+            print("=== LOAD JSON ERROR ===")
+            print(type(e).__name__)
+            print(e)
+
+            QtWidgets.QMessageBox.critical(
+                self,
+                "Lỗi",
+                str(e)
+            )
 
 
 
