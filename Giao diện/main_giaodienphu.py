@@ -9,9 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 # CHÚ Ý: cái đám này là đừng dẫn đến file ui nhé!
 UI1_PATH = BASE_DIR / 'Long - đổi tên file.ui'
-UI2_PATH = BASE_DIR / 'Long - xác nhận xóa.ui'
 UI3_PATH = BASE_DIR / 'Long - xem thuộc tính.ui'
-UI4_PATH = BASE_DIR / 'Lỗi.ui'
 UI5_PATH = BASE_DIR / 'Tạo file.ui'
 UI6_PATH = BASE_DIR / 'Tạo thư mục.ui'
 UI7_PATH = BASE_DIR / 'tree_panel.ui'
@@ -22,32 +20,67 @@ class Doi_Ten_File(QtWidgets.QDialog):
     # Tạo một tín hiệu tùy chỉnh để gửi tên file mới về giao diện chính (nếu cần)
     tin_hieu_doi_ten_xong = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, parent_node, old_name):
         super().__init__()
-        
-        # 3. Nạp file UI của Dialog (ép kiểu sang chuỗi để tránh lỗi)
+
         uic.loadUi(str(UI1_PATH), self)
-        
-        # --- KẾT NỐI CÁC THÀNH PHẦN TRÊN DIALOG TẠI ĐÂY ---
-        # Ví dụ kết nối nút bấm để kiểm tra chức năng:
-        # Giả sử nút bấm của bạn tên là btn_xac_nhan
-        # self.btn_xac_nhan.clicked.connect(self.nut_xac_nhan_clicked)
 
-    def nut_xac_nhan_clicked(self):
-        # Ví dụ: Lấy dữ liệu người dùng nhập từ ô txt_ten_moi
-        # ten_moi = self.txt_ten_moi.text()
-        
-        # Phát tín hiệu gửi tên mới về file chính
-        # self.tin_hieu_doi_ten_xong.emit(ten_moi)
-        
-        # Đóng dialog sau khi bấm xác nhận
-        self.accept() 
+        self.parent_node = parent_node
+        self.old_name = old_name
 
-class Xac_Nhan_Xoa(QtWidgets.QDialog):
-    def __init__(self):
-        super().__init__()
-        uic.loadUi(str(UI2_PATH), self)
-        # Kết nối các nút bấm tại đây 
+        self.buttonBox.accepted.connect(self.xac_nhan)
+
+        self.buttonBox.rejected.connect(self.reject)
+
+    def xac_nhan(self):
+
+        ten_moi = self.txtNewname.text().strip()
+
+        # Tên rỗng
+        if not ten_moi:
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Lỗi",
+                "Tên không được để trống!"
+            )
+            return
+
+        # Trùng tên cũ
+        if ten_moi == self.old_name:
+            QtWidgets.QMessageBox.information(
+                self,
+                "Thông báo",
+                "Tên mới phải khác tên cũ! À thật ra thì không khác cũng đc:)"
+            )
+        
+
+        # Trùng tên cùng cấp
+        node_con = self.parent_node.children.head
+
+        while node_con:
+
+            if (
+                node_con.name == ten_moi
+                and node_con.name != self.old_name
+            ):
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "Lỗi",
+                    "Tên đã tồn tại!"
+                )
+                return
+
+            node_con = node_con.next
+
+        # Hợp lệ -> gửi về MainWindow
+        self.tin_hieu_doi_ten_xong.emit(
+            ten_moi
+        )
+
+        self.accept()
+
+
+
     
     # tương tự ở trên nhé ae
 
@@ -57,28 +90,148 @@ class Xem_Thuoc_Tinh(QtWidgets.QDialog):
         uic.loadUi(str(UI3_PATH), self)
         # Kết nối các nút bấm tại đây 
     
-class Loi(QtWidgets.QDialog):
-    def __init__(self):
-        super().__init__()
-        uic.loadUi(str(UI4_PATH), self)
-        # Kết nối các nút bấm tại đây
-    
 
 class Tao_File(QtWidgets.QDialog):
+
+    tao_file_xong = pyqtSignal(str,int)
+
     def __init__(self):
         super().__init__()
         uic.loadUi(str(UI5_PATH), self)
         # Kết nối các nút bấm tại đây
 
+        self.btnOK.clicked.connect(
+            self.xac_nhan
+        )
+
+        self.btnKOK.clicked.connect(
+            self.huy
+        )
+
+    def xac_nhan(self):
+
+        ten = self.txtName.text().strip()
+        loai = self.cboLoai.currentText()
+        size = self.txtSize.text().strip()
+        don_vi = self.cboCo.currentText()
+
+        if not ten:
+            QtWidgets.QMessageBox.warning(self,"Lỗi","Tên file không được để trống!")
+            return
+
+        try:
+
+                size = float(size)
+
+                if size <= 0:
+
+                    QtWidgets.QMessageBox.warning(
+                        self,
+                        "Lỗi",
+                        "Kích thước phải lớn hơn 0!"
+                    )
+
+                    return
+
+        except ValueError:
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "Lỗi",
+                    "Kích thước không hợp lệ!"
+                )
+
+                return
+
+        ten_file = f"{ten}.{loai}"
+
+
+        if don_vi == "KB":
+                size_kb = int(size)
+        elif don_vi == "MB":
+                size_kb = int(size * 1024)
+        elif don_vi == "GB":
+                size_kb = int(size * 1024 * 1024)
+        else:
+            size_kb = int(size)
+        self.tao_file_xong.emit(ten_file,size_kb)
+        self.accept()
+    def huy(self):
+
+        QtWidgets.QMessageBox.information(
+            self,
+            "Thông báo",
+            "Đã hủy tạo file."
+        )
+
+        self.reject()
+
 class Tao_Thu_Muc(QtWidgets.QDialog):
-    def __init__(self):
+    tao_thu_muc_xong = pyqtSignal(str)
+    def __init__(self, parent_node):
         super().__init__()
         uic.loadUi(str(UI6_PATH), self)
-        # Kết nối các nút bấm tại đây
+
+        self.parent_node = parent_node
+        
+        self.btnOK.clicked.connect(
+            self.xac_nhan)
+        self.btnKOK.clicked.connect(
+            self.huy)
+        
+    def xac_nhan(self):
+
+        ten_thu_muc = (
+            self.txtName.text().strip()
+        )
+
+        if not ten_thu_muc:
+
+            QtWidgets.QMessageBox.warning(
+                self,
+                "Lỗi",
+                "Tên thư mục không được để trống!"
+            )
+
+            return
+
+        node_con = (
+            self.parent_node.children.head
+        )
+
+        while node_con:
+
+            if node_con.name == ten_thu_muc:
+
+                QtWidgets.QMessageBox.warning(
+                    self,
+                    "Lỗi",
+                    "Tên thư mục đã tồn tại!"
+                )
+
+                return
+
+            node_con = node_con.next
+
+        self.tao_thu_muc_xong.emit(
+            ten_thu_muc
+        )
+
+        self.accept()
+
+    def huy(self):
+
+        QtWidgets.QMessageBox.information(
+            self,
+            "Thông báo",
+            "Đã hủy tạo thư mục."
+        )
+
+        self.reject()
+
+
 
 class Tree_Panel(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi(str(UI7_PATH), self)
         # Kết nối các nút bấm tại đây
-

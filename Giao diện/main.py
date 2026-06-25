@@ -73,8 +73,6 @@ class MainApp(QtWidgets.QMainWindow):
             self.refresh_all()
         """
 
-
-
     def refresh_tree_view(self):
         """
         Đổ toàn bộ cây thư mục lên TreeView.
@@ -91,8 +89,6 @@ class MainApp(QtWidgets.QMainWindow):
         sẽ cực kỳ hữu ích ở đây.
         """
 
-
-
     def refresh_table_view(self):
         """
         Hiển thị danh sách con
@@ -107,8 +103,6 @@ class MainApp(QtWidgets.QMainWindow):
 
         Đây chính là chức năng ls.
         """
-
-
 
     def refresh_path(self):
         """
